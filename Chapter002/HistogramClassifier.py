@@ -10,28 +10,28 @@ class HistogramClassifier(object):
 
     def __init__(self):
 
-        self.verbose = False
-        self.minimumSimilarityForPositiveLabel = 0.075
+        self.verbose = False#是否记录每个图像的相似度
+        self.minimumSimilarityForPositiveLabel = 0.075#相似性阈值
 
         self._channels = range(3)
         self._histSize = [256] * 3
         self._ranges = [0, 255] * 3
-        self._references = {}
+        self._references = {}#将字符串键值映射到直方图列表中
 
     def _createNormalizedHist(self, image, sparse):
-        # Create the histogram.
+        # Create the histogram.hist是calchist方法返回的实例
         hist = cv2.calcHist([image], self._channels, None,
-                            self._histSize, self._ranges)
+                            self._histSize, self._ranges)#接受图像/通道数/直方图大小/每个颜色通道的范围
         # Normalize the histogram.
-        hist[:] = hist * (1.0 / numpy.sum(hist))
+        hist[:] = hist * (1.0 / numpy.sum(hist))#将直方图平展成一维形式，利于存储
         # Convert the histogram to one column for efficient storage.
         hist = hist.reshape(16777216, 1)  # 16777216 == pow(2, 24)
         if sparse:
             # Convert the histogram to a sparse matrix.
-            hist = scipy.sparse.csc_matrix(hist)
+            hist = scipy.sparse.csc_matrix(hist)#转换成稀疏矩阵
         return hist
 
-    def addReference(self, image, label):
+    def addReference(self, image, label):#标签是一个描述分类的字符串
         hist = self._createNormalizedHist(image, True)
         if label not in self._references:
             self._references[label] = [hist]
