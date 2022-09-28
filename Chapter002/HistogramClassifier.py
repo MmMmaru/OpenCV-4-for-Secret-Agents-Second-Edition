@@ -6,7 +6,7 @@ import cv2
 import scipy.io
 import scipy.sparse
 
-class HistogramClassifier(object):
+class HistogramClassifier(object):#1111
 
     def __init__(self):
 
